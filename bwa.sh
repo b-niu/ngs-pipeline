@@ -15,3 +15,8 @@ bwa mem -t {args.threads} -M -R "{self.read_group_info}" {ENV.REF_FASTA} {self.f
   sambamba view -f bam -S -l 0 -t {args.threads} /dev/stdin | \
   sambamba sort -m {MEMORY_USE}GB --tmpdir . -o {self.output_bam} -l 5 -t {args.threads} /dev/stdin \
   && sambamba index {self.output_bam}
+
+
+sambamba markdup -t {args.threads} -l 5 --tmpdir . \
+  {self.input_bam} {ENV.DEDUP_BAM_DIR}/{self.name}.dedup.bam \
+  && sambamba index -t {args.threads} {ENV.DEDUP_BAM_DIR}/{self.name}.dedup.bam
